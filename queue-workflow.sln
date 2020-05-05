@@ -20,9 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueuesQuickstartV12", "Queu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetcore.keyvault.fetch", "dotnetcore.keyvault.fetch\dotnetcore.keyvault.fetch.csproj", "{A0D0A151-A803-4C92-B19A-B196CCE0BC6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenderToQueue", "SenderToQueue\SenderToQueue.csproj", "{EBEACD34-4C64-405C-BACD-26AAC752A740}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenderToQueue", "SenderToQueue\SenderToQueue.csproj", "{EBEACD34-4C64-405C-BACD-26AAC752A740}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceiverQueue", "ReceiverQueue\ReceiverQueue.csproj", "{37F19085-0425-4B77-8D28-96F94CD4F94C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReceiverQueue", "ReceiverQueue\ReceiverQueue.csproj", "{37F19085-0425-4B77-8D28-96F94CD4F94C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

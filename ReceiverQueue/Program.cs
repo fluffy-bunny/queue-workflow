@@ -15,6 +15,12 @@ namespace ReceiverQueue
 {
     class Program
     {
+        public static string Base64Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        }
+
         static async Task Main(string[] args)
         {
             var loggerFactory = LoggerFactory.Create(builder =>
@@ -60,7 +66,7 @@ namespace ReceiverQueue
                 foreach (QueueMessage message in messages)
                 {
                     // "Process" the message
-                    Console.WriteLine($"Message: {message.MessageText}");
+                    Console.WriteLine($"Message: {message.MessageText} - {Base64Decode(message.MessageText)}");
 
                     // Let the service know we're finished with
                     // the message and it can be safely deleted.

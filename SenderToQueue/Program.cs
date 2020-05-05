@@ -10,6 +10,11 @@ namespace SenderToQueue
 {
     class Program
     {
+        public static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
         static async Task Main(string[] args)
         {
             var loggerFactory = LoggerFactory.Create(builder =>
@@ -55,7 +60,8 @@ namespace SenderToQueue
                 for(int i = 0; i<10; i++)
                 {
                     var msg = $"Message....{index}";
-                    await queueClient.SendMessageAsync(msg);
+                    var encodedMsg = Base64Encode(msg);
+                    await queueClient.SendMessageAsync(encodedMsg);
                     Console.WriteLine(msg);
                     index++;
                 }
