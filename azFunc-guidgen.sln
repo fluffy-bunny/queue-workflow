@@ -20,6 +20,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueuesQuickstartV12", "Queu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetcore.keyvault.fetch", "dotnetcore.keyvault.fetch\dotnetcore.keyvault.fetch.csproj", "{A0D0A151-A803-4C92-B19A-B196CCE0BC6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenderToQueue", "SenderToQueue\SenderToQueue.csproj", "{EBEACD34-4C64-405C-BACD-26AAC752A740}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceiverQueue", "ReceiverQueue\ReceiverQueue.csproj", "{37F19085-0425-4B77-8D28-96F94CD4F94C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +46,14 @@ Global
 		{A0D0A151-A803-4C92-B19A-B196CCE0BC6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0D0A151-A803-4C92-B19A-B196CCE0BC6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0D0A151-A803-4C92-B19A-B196CCE0BC6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBEACD34-4C64-405C-BACD-26AAC752A740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBEACD34-4C64-405C-BACD-26AAC752A740}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBEACD34-4C64-405C-BACD-26AAC752A740}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBEACD34-4C64-405C-BACD-26AAC752A740}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37F19085-0425-4B77-8D28-96F94CD4F94C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37F19085-0425-4B77-8D28-96F94CD4F94C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37F19085-0425-4B77-8D28-96F94CD4F94C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37F19085-0425-4B77-8D28-96F94CD4F94C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
