@@ -37,7 +37,7 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         ls
-        dotnet restore azFunc-guidgen.sln
+        dotnet restore queue-workflow.sln
         popd
 
     - name: 'Build'
