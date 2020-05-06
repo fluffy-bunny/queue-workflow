@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
+using Contracts;
 using dotnetcore.keyvault.fetch;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,11 +11,7 @@ namespace SenderToQueue
 {
     class Program
     {
-        public static string Base64Encode(string plainText)
-        {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
-        }
+     
         static async Task Main(string[] args)
         {
             var loggerFactory = LoggerFactory.Create(builder =>
@@ -59,10 +56,16 @@ namespace SenderToQueue
                 // Send several messages to the queue
                 for(int i = 0; i<10; i++)
                 {
-                    var msg = $"Message....{index}";
-                    var encodedMsg = Base64Encode(msg);
+                    var job = new Job
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        IssuedTime = DateTime.UtcNow,
+                        Name = "My SuperDuper Job"
+                    };
+
+                    var encodedMsg = job.Base64Encode();
                     await queueClient.SendMessageAsync(encodedMsg);
-                    Console.WriteLine(msg);
+                    Console.WriteLine(encodedMsg);
                     index++;
                 }
                 Thread.Sleep(1000);

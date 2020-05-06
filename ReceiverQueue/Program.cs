@@ -1,6 +1,7 @@
 ﻿using Azure.Identity;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
+using Contracts;
 using dotnetcore.keyvault.fetch;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,11 +16,7 @@ namespace ReceiverQueue
 {
     class Program
     {
-        public static string Base64Decode(string base64EncodedData)
-        {
-            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
-            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-        }
+        
 
         static async Task Main(string[] args)
         {
@@ -65,8 +62,10 @@ namespace ReceiverQueue
                 // Process and delete messages from the queue
                 foreach (QueueMessage message in messages)
                 {
+                    var decoded = message.MessageText.Base64Decode();
                     // "Process" the message
-                    Console.WriteLine($"Message: {message.MessageText} - {Base64Decode(message.MessageText)}");
+                    Console.WriteLine($"Message: {message.MessageText} - {decoded}");
+                    var job = message.MessageText.Base64Decode<Job>();
 
                     // Let the service know we're finished with
                     // the message and it can be safely deleted.
