@@ -11,6 +11,7 @@ on:
 #
 # 2. Change these variables for your configuration:
 env:
+  SOLUTION: queue-workflow.sln
   AZURE_FUNCTIONAPP_NAME: azfunc-guidgen  # set this to your application's name
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'    # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '3.1.201'              # set this to the dotnet version to use
@@ -37,7 +38,7 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         ls
-        dotnet restore queue-workflow.sln
+        dotnet restore ${{ env.SOLUTION }}
         popd
 
     - name: 'Build'
@@ -45,14 +46,14 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         ls
-        dotnet build --configuration Release --output ./output azFunc-guidgen.sln
+        dotnet build --configuration Release --output ./output ${{ env.SOLUTION }}
         popd
 
     - name: 'Test'
       shell: bash
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        dotnet test azFunc-guidgen.sln
+        dotnet test ${{ env.SOLUTION }}
         popd
 
     - name: 'Run Azure Functions Action'
