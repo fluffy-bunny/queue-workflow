@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Contracts
 {
+    [Serializable()]
     public class Job
     {
         public string Id { get; set; }

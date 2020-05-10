@@ -24,7 +24,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenderToQueue", "SenderToQu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReceiverQueue", "ReceiverQueue\ReceiverQueue.csproj", "{37F19085-0425-4B77-8D28-96F94CD4F94C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{7411B2E3-9235-475C-95D9-F524AAAE7FCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts.csproj", "{7411B2E3-9235-475C-95D9-F524AAAE7FCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBus_Sender", "ServiceBus_Sender\ServiceBus_Sender.csproj", "{7F24BF6F-325C-4703-A263-52F7055D48BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBus_Receiver", "ServiceBus_Receiver\ServiceBus_Receiver.csproj", "{61D43E84-C9A3-4C99-AF2C-EB011C98C32F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +64,14 @@ Global
 		{7411B2E3-9235-475C-95D9-F524AAAE7FCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7411B2E3-9235-475C-95D9-F524AAAE7FCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7411B2E3-9235-475C-95D9-F524AAAE7FCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F24BF6F-325C-4703-A263-52F7055D48BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F24BF6F-325C-4703-A263-52F7055D48BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F24BF6F-325C-4703-A263-52F7055D48BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F24BF6F-325C-4703-A263-52F7055D48BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61D43E84-C9A3-4C99-AF2C-EB011C98C32F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61D43E84-C9A3-4C99-AF2C-EB011C98C32F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61D43E84-C9A3-4C99-AF2C-EB011C98C32F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61D43E84-C9A3-4C99-AF2C-EB011C98C32F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
