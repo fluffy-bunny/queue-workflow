@@ -20,6 +20,7 @@ namespace ReceiverQueue
 
         static async Task Main(string[] args)
         {
+            ISerializer serializer = new Serializer();
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
@@ -65,7 +66,7 @@ namespace ReceiverQueue
                     var decoded = message.MessageText.Base64Decode();
                     // "Process" the message
                     Console.WriteLine($"Message: {message.MessageText} - {decoded}");
-                    var job = message.MessageText.Base64Decode<Job>();
+                    var job = serializer.Deserialize<Job>(decoded);
 
                     // Let the service know we're finished with
                     // the message and it can be safely deleted.

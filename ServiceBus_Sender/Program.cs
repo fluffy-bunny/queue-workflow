@@ -18,6 +18,7 @@ namespace ServiceBus_Sender
             Console.WriteLine("Hello World!");
             var queueUri = $"sb://{Namespace}.servicebus.windows.net/";
 
+            ISerializer serializer = new Serializer();
             var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
             QueueClient sendClient = new QueueClient(queueUri, Queue, tokenProvider);
             var job = new Job
@@ -26,8 +27,7 @@ namespace ServiceBus_Sender
                 IssuedTime = DateTime.UtcNow,
                 Name = "My SuperDuper Job"
             };
-            byte[] byteMessage = Encoding.UTF8.GetBytes(job.Base64Encode());
-//            byte[] byteMessage = job.ToByteArray();
+            byte[] byteMessage = Encoding.UTF8.GetBytes(serializer.Serialize(job));
             await sendClient.SendAsync(new Message(byteMessage));
             await sendClient.CloseAsync();
 

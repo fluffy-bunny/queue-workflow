@@ -14,6 +14,7 @@ namespace SenderToQueue
      
         static async Task Main(string[] args)
         {
+            ISerializer serializer = new Serializer();
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
@@ -62,8 +63,9 @@ namespace SenderToQueue
                         IssuedTime = DateTime.UtcNow,
                         Name = "My SuperDuper Job"
                     };
+                    var json = serializer.Serialize(job);
 
-                    var encodedMsg = job.Base64Encode();
+                    var encodedMsg = json.Base64Encode();
                     await queueClient.SendMessageAsync(encodedMsg);
                     Console.WriteLine(encodedMsg);
                     index++;

@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Contracts
 {
@@ -11,11 +12,13 @@ namespace Contracts
             var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
+
         public static string Base64Encode(this string plainText)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
         }
+
         public static string Base64Encode<T>(this T obj) 
             where T: class
         {
@@ -23,6 +26,7 @@ namespace Contracts
             var encoded = json.Base64Encode();
             return encoded;
         }
+
         public static byte[] ToByteArray<T>(this T obj) 
             where T : class
         {
@@ -35,15 +39,17 @@ namespace Contracts
             }
             return byteMessage;
         }
+
         public static string ToJson<T>(this T obj) where T: class
         {
-            var json = JsonConvert.SerializeObject(obj);
+            var json = JsonSerializer.Serialize(obj);
             return json;
         }
+
         public static T FromJson<T>(this string json)
             where T : class
         {
-            var obj = JsonConvert.DeserializeObject<T>(json);
+            var obj = JsonSerializer.Deserialize<T>(json);
             return obj;
         }
 
@@ -54,6 +60,7 @@ namespace Contracts
             var obj = json.FromJson<T>();
             return obj;
         }
+
         public static T ToObj<T>(this byte[] byteArray)
             where T:class
         {
