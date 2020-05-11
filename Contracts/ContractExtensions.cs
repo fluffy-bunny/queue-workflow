@@ -19,7 +19,7 @@ namespace Contracts
         public static string Base64Encode<T>(this T obj) 
             where T: class
         {
-            var json = JsonConvert.SerializeObject(obj);
+            var json = obj.ToJson();
             var encoded = json.Base64Encode();
             return encoded;
         }
@@ -35,11 +35,23 @@ namespace Contracts
             }
             return byteMessage;
         }
+        public static string ToJson<T>(this T obj) where T: class
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            return json;
+        }
+        public static T FromJson<T>(this string json)
+            where T : class
+        {
+            var obj = JsonConvert.DeserializeObject<T>(json);
+            return obj;
+        }
+
         public static T Base64Decode<T>(this string base64EncodedData) 
             where T : class
         {
             var json = base64EncodedData.Base64Decode();
-            var obj = JsonConvert.DeserializeObject<T>(json);
+            var obj = json.FromJson<T>();
             return obj;
         }
         public static T ToObj<T>(this byte[] byteArray)

@@ -67,8 +67,11 @@ namespace ServiceBus_Receiver
 
             // Deserialize the hashtable from the file and
             // assign the reference to the local variable.
-            var job = message.Body.ToObj<Job>();
-            var json = JsonConvert.SerializeObject(job);
+
+            var encodedString = Encoding.UTF8.GetString(message.Body);
+            var job = encodedString.Base64Decode<Job>();
+            var json = job.ToJson();
+
             Console.WriteLine($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{json}");
 
             // Complete the message so that it is not received again.

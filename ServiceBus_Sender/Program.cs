@@ -26,8 +26,8 @@ namespace ServiceBus_Sender
                 IssuedTime = DateTime.UtcNow,
                 Name = "My SuperDuper Job"
             };
-            
-            byte[] byteMessage = job.ToByteArray();
+            byte[] byteMessage = Encoding.UTF8.GetBytes(job.Base64Encode());
+//            byte[] byteMessage = job.ToByteArray();
             await sendClient.SendAsync(new Message(byteMessage));
             await sendClient.CloseAsync();
 

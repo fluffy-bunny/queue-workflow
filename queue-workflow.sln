@@ -26,9 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReceiverQueue", "ReceiverQu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts.csproj", "{7411B2E3-9235-475C-95D9-F524AAAE7FCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBus_Sender", "ServiceBus_Sender\ServiceBus_Sender.csproj", "{7F24BF6F-325C-4703-A263-52F7055D48BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBus_Sender", "ServiceBus_Sender\ServiceBus_Sender.csproj", "{7F24BF6F-325C-4703-A263-52F7055D48BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBus_Receiver", "ServiceBus_Receiver\ServiceBus_Receiver.csproj", "{61D43E84-C9A3-4C99-AF2C-EB011C98C32F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBus_Receiver", "ServiceBus_Receiver\ServiceBus_Receiver.csproj", "{61D43E84-C9A3-4C99-AF2C-EB011C98C32F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
