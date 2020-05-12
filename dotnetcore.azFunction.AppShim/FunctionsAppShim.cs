@@ -94,5 +94,17 @@ namespace dotnetcore.azFunction.AppShim
             }
             return _loggerProvider;
         }
+
+        public async Task<HttpResponseMessage> SendAsync(ExecutionContext context, 
+            HttpRequestMessage httpRequestMessage)
+        {
+            if (_logger == null)
+            {
+                throw new Exception("You must call Initialize(logger) first.");
+            }
+            var testServerHttpClient = FetchTestServerHttpClient(context, _logger);
+            var responseMessage = await testServerHttpClient.HttpClient.SendAsync(httpRequestMessage);
+            return responseMessage;
+        }
     }
 }

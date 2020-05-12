@@ -19,7 +19,7 @@ namespace azFunc_guidgen
         {
             _functionsAppShim = functionsAppShim;
         }
-        static bool _initialized = false;
+   
         [FunctionName("IngressWebApiApp")]
         public async Task<HttpResponseMessage> Run(
             Microsoft.Azure.WebJobs.ExecutionContext context,
@@ -27,10 +27,10 @@ namespace azFunc_guidgen
             ILogger logger)
         {
             logger.LogInformation("C# HTTP trigger function processed a request.");
-            if (!_initialized)
+            if (!Global.Initialized)
             {
                 await _functionsAppShim.Initialize(logger);
-                _initialized = true;
+                Global.Initialized = true;
             }
             return await _functionsAppShim.Run(context, request);
         }
