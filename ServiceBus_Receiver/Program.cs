@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using ConsoleUtils;
+using Contracts;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Primitives;
 using Newtonsoft.Json;
@@ -16,21 +17,23 @@ namespace ServiceBus_Receiver
         static string Namespace = "sb-queueflow";
         static string Queue = "sbq-queueflow";
         static QueueClient queueClient;
+        static ISerializer _serializer;
         static async Task Main(string[] args)
         {
             Console.WriteLine("Hello World!");
             var queueUri = $"sb://{Namespace}.servicebus.windows.net/";
 
+            _serializer = new Serializer();
             var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
             queueClient = new QueueClient(queueUri, Queue, tokenProvider);
-            Console.WriteLine("======================================================");
+            Console.WriteLine("===========================================================");
             Console.WriteLine("Press ENTER key to exit after receiving all the messages.");
-            Console.WriteLine("======================================================");
+            Console.WriteLine("===========================================================");
 
             // Register QueueClient's MessageHandler and receive messages in a loop
             RegisterOnMessageHandlerAndReceiveMessages();
 
-            Console.ReadKey();
+            while (!ConsoleHelper.QuitRequest(2000)){}
 
             await queueClient.CloseAsync();
         }
@@ -68,9 +71,9 @@ namespace ServiceBus_Receiver
             // Deserialize the hashtable from the file and
             // assign the reference to the local variable.
 
-            var encodedString = Encoding.UTF8.GetString(message.Body);
-            var job = encodedString.Base64Decode<Job>();
-            var json = job.ToJson();
+            var json = Encoding.UTF8.GetString(message.Body);
+            var job = _serializer.Deserialize<Job>(json);
+            json = job.ToJson();
 
             Console.WriteLine($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{json}");
 

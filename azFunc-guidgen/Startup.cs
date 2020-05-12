@@ -15,6 +15,7 @@ namespace azFunc_guidgen
         {
             builder.Services.AddHttpClient();
             builder.Services.AddSerializer();
+            builder.Services.AddBase64Encoder();
         }
     }
 }

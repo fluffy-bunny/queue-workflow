@@ -12,5 +12,11 @@ namespace Contracts.Extensions
             services.AddSingleton<ISerializer, Serializer>();
             return services;
         }
+        public static IServiceCollection AddBase64Encoder(this IServiceCollection services)
+        {
+            services.AddSingleton<IBase64Encoder, Base64Encoder>();
+            return services;
+        }
+
     }
 }

@@ -26,20 +26,7 @@ namespace Contracts
             var encoded = json.Base64Encode();
             return encoded;
         }
-
-        public static byte[] ToByteArray<T>(this T obj) 
-            where T : class
-        {
-            var formatter = new BinaryFormatter();
-            byte[] byteMessage;
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, obj);
-                byteMessage = stream.ToArray();
-            }
-            return byteMessage;
-        }
-
+ 
         public static string ToJson<T>(this T obj) where T: class
         {
             var json = JsonSerializer.Serialize(obj);
@@ -61,17 +48,7 @@ namespace Contracts
             return obj;
         }
 
-        public static T ToObj<T>(this byte[] byteArray)
-            where T:class
-        {
-            Stream stream = new MemoryStream(byteArray);
-            BinaryFormatter formatter = new BinaryFormatter();
-
-            // Deserialize the hashtable from the file and
-            // assign the reference to the local variable.
-            var obj = (T)formatter.Deserialize(stream);
-            return obj;
-        }
+        
 
     }
 }
