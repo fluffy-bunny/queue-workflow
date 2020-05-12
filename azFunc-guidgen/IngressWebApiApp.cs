@@ -19,7 +19,7 @@ namespace azFunc_guidgen
         {
             _functionsAppShim = functionsAppShim;
         }
-        bool _initialized = false;
+        static bool _initialized = false;
         [FunctionName("IngressWebApiApp")]
         public async Task<HttpResponseMessage> Run(
             Microsoft.Azure.WebJobs.ExecutionContext context,
