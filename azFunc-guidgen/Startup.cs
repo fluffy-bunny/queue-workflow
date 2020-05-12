@@ -1,4 +1,5 @@
 ﻿using Contracts.Extensions;
+using dotnetcore.azFunction.AppShim;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
@@ -16,6 +17,11 @@ namespace azFunc_guidgen
             builder.Services.AddHttpClient();
             builder.Services.AddSerializer();
             builder.Services.AddBase64Encoder();
+            var functionsAppShim = new FunctionsAppShim<WebApiApp.Startup>
+            {
+                LoadConfigurationsDelegate = WebApiApp.Program.LoadConfigurations
+            };
+            builder.Services.AddSingleton<IFunctionsAppShim>(functionsAppShim);
         }
     }
 }
