@@ -88,6 +88,7 @@ namespace dotnetcore.azFunction.AppShim
 
             httpRequestMessage.RequestUri = uriBuilder.Uri;
             httpRequestMessage.Headers.Remove("Host");
+            httpRequestMessage.Headers.Add("x-InvocationId", context.InvocationId.ToString());
             var responseMessage = await testServerHttpClient.HttpClient.SendAsync(httpRequestMessage);
             return responseMessage;
         }
@@ -110,6 +111,7 @@ namespace dotnetcore.azFunction.AppShim
                 throw new Exception("You must call Initialize(logger) first.");
             }
             var testServerHttpClient = FetchTestServerHttpClient(context, _logger);
+            httpRequestMessage.Headers.Add("x-InvocationId", context.InvocationId.ToString());
             var responseMessage = await testServerHttpClient.HttpClient.SendAsync(httpRequestMessage);
             return responseMessage;
         }

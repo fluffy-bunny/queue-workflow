@@ -43,9 +43,6 @@ namespace azFunc_guidgen
 
 
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/MyServiceBusTriggerFunction");
-
-            httpRequestMessage.Headers.Add("x-InvocationId", context.InvocationId.ToString());
-
             httpRequestMessage.Content = new StringContent(
                 json,
                 Encoding.UTF8, "application/json");
