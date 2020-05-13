@@ -16,45 +16,52 @@ namespace dotnetcore.azFunction.AppShim
     {
         public LoadConfigurationsDelegate LoadConfigurationsDelegate { get; set; }
         ITestServerHttpClient _testServerHttpClient;
-
+        private readonly object startupLock = new object();
         public ILogger _logger { get; private set; }
 
         private HostLoggerProvider _loggerProvider;
 
         ITestServerHttpClient FetchTestServerHttpClient(ExecutionContext context, ILogger logger)
         {
-            if (_testServerHttpClient == null)
+            if (_testServerHttpClient != null)
             {
-                var hostBuilder = new HostBuilder()
-                 .ConfigureWebHost(webHost =>
-                 {
+                return _testServerHttpClient;
+            }
+            lock (startupLock)
+            {
+                if (_testServerHttpClient == null)
+                {
+                    var hostBuilder = new HostBuilder()
+                     .ConfigureWebHost(webHost =>
+                     {
                      //webHost.UseContentRoot()
                      // Add TestServer
                      webHost.UseTestServer();
-                     webHost.UseStartup<TStartup>();
-                     webHost.ConfigureAppConfiguration((hostingContext, config) =>
+                         webHost.UseStartup<TStartup>();
+                         webHost.ConfigureAppConfiguration((hostingContext, config) =>
+                         {
+                             var environmentName = hostingContext.HostingEnvironment.EnvironmentName;
+                             config.SetBasePath(context.FunctionAppDirectory);
+                             LoadConfigurationsDelegate(config, environmentName);
+                             config.AddEnvironmentVariables();
+                             config.AddUserSecrets<TStartup>();
+                         });
+                     })
+
+                     .ConfigureLogging((context, loggingBuilder) =>
                      {
-                         var environmentName = hostingContext.HostingEnvironment.EnvironmentName;
-                         config.SetBasePath(context.FunctionAppDirectory);
-                         LoadConfigurationsDelegate(config, environmentName);
-                         config.AddEnvironmentVariables();
-                         config.AddUserSecrets<TStartup>();
+                         loggingBuilder.ClearProviders();
+                         loggingBuilder.AddProvider(new HostLoggerProvider("me-tenant", logger));
                      });
-                 })
-                 
-                 .ConfigureLogging((context, loggingBuilder) =>
-                 {
-                     loggingBuilder.ClearProviders();
-                     loggingBuilder.AddProvider(new HostLoggerProvider("me-tenant", logger));
-                 });
-                // Build and start the IHost
-                var host = hostBuilder.StartAsync().GetAwaiter().GetResult();
-                _testServerHttpClient = new TestServerHttpClient
-                {
-                    HttpClient = host.GetTestClient()
-                };
+                    // Build and start the IHost
+                    var host = hostBuilder.StartAsync().GetAwaiter().GetResult();
+                    _testServerHttpClient = new TestServerHttpClient
+                    {
+                        HttpClient = host.GetTestClient()
+                    };
+                }
+                return _testServerHttpClient;
             }
-            return _testServerHttpClient;
         }
         public async Task<HttpResponseMessage> Run(ExecutionContext context, HttpRequest request)
         {
