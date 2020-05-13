@@ -19,19 +19,14 @@ namespace azFunc_guidgen
         {
             _functionsAppShim = functionsAppShim;
         }
-   
-        [FunctionName("IngressWebApiApp")]
+        // seems that routes are ordered hence Z
+        [FunctionName("Z-CATCHALL")]
         public async Task<HttpResponseMessage> Run(
             Microsoft.Azure.WebJobs.ExecutionContext context,
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", "put", "delete", Route = "{*all}")] HttpRequest request,
             ILogger logger)
         {
-            logger.LogInformation("C# HTTP trigger function processed a request.");
-            if (!Global.Initialized)
-            {
-                await _functionsAppShim.Initialize(logger);
-                Global.Initialized = true;
-            }
+            await dotnetcore.azFunction.AppShim.Global.InitializeShimAsync(context, _functionsAppShim, logger);
             return await _functionsAppShim.Run(context, request);
         }
     }

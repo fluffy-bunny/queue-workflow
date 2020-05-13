@@ -16,60 +16,49 @@ namespace dotnetcore.azFunction.AppShim
     {
         public LoadConfigurationsDelegate LoadConfigurationsDelegate { get; set; }
         ITestServerHttpClient _testServerHttpClient;
-        private readonly object startupLock = new object();
-        public ILogger _logger { get; private set; }
 
-        private HostLoggerProvider _loggerProvider;
-
-        ITestServerHttpClient FetchTestServerHttpClient(ExecutionContext context, ILogger logger)
+        ITestServerHttpClient CreateTestServerHttpClient(ExecutionContext context, ILogger logger)
         {
-            if (_testServerHttpClient != null)
+            if (_testServerHttpClient == null)
             {
-                return _testServerHttpClient;
-            }
-            lock (startupLock)
-            {
-                if (_testServerHttpClient == null)
-                {
-                    var hostBuilder = new HostBuilder()
-                     .ConfigureWebHost(webHost =>
+                var hostBuilder = new HostBuilder()
+                 .ConfigureWebHost(webHost =>
+                 {
+                         //webHost.UseContentRoot()
+                         // Add TestServer
+                         webHost.UseTestServer();
+                     webHost.UseStartup<TStartup>();
+                     webHost.ConfigureAppConfiguration((hostingContext, config) =>
                      {
-                     //webHost.UseContentRoot()
-                     // Add TestServer
-                     webHost.UseTestServer();
-                         webHost.UseStartup<TStartup>();
-                         webHost.ConfigureAppConfiguration((hostingContext, config) =>
-                         {
-                             var environmentName = hostingContext.HostingEnvironment.EnvironmentName;
-                             config.SetBasePath(context.FunctionAppDirectory);
-                             LoadConfigurationsDelegate(config, environmentName);
-                             config.AddEnvironmentVariables();
-                             config.AddUserSecrets<TStartup>();
-                         });
-                     })
-
-                     .ConfigureLogging((context, loggingBuilder) =>
-                     {
-                         loggingBuilder.ClearProviders();
-                         loggingBuilder.AddProvider(new HostLoggerProvider("me-tenant", logger));
+                         var environmentName = hostingContext.HostingEnvironment.EnvironmentName;
+                         config.SetBasePath(context.FunctionAppDirectory);
+                         LoadConfigurationsDelegate(config, environmentName);
+                         config.AddEnvironmentVariables();
+                         config.AddUserSecrets<TStartup>();
                      });
-                    // Build and start the IHost
-                    var host = hostBuilder.StartAsync().GetAwaiter().GetResult();
-                    _testServerHttpClient = new TestServerHttpClient
-                    {
-                        HttpClient = host.GetTestClient()
-                    };
-                }
-                return _testServerHttpClient;
+                 })
+
+                 .ConfigureLogging((context, loggingBuilder) =>
+                 {
+                     loggingBuilder.ClearProviders();
+                     loggingBuilder.AddProvider(new HostLoggerProvider("me-tenant", logger));
+                 });
+                // Build and start the IHost
+                var host = hostBuilder.StartAsync().GetAwaiter().GetResult();
+                _testServerHttpClient = new TestServerHttpClient
+                {
+                    HttpClient = host.GetTestClient()
+                };
             }
+            return _testServerHttpClient;
         }
         public async Task<HttpResponseMessage> Run(ExecutionContext context, HttpRequest request)
         {
-            if(_logger == null)
+            if(_testServerHttpClient == null)
             {
-                throw new Exception("You must call Initialize(logger) first.");
+                throw new Exception("You must call Initialize(context,logger) first.");
             }
-            var testServerHttpClient = FetchTestServerHttpClient(context, _logger);
+            var testServerHttpClient = _testServerHttpClient;
 
             var httpRequestMessageFeature = new HttpRequestMessageFeature(request);
             var httpRequestMessage = httpRequestMessageFeature.HttpRequestMessage;
@@ -93,24 +82,19 @@ namespace dotnetcore.azFunction.AppShim
             return responseMessage;
         }
 
-        public async Task<ILoggerProvider> Initialize(ILogger logger)
+        public async Task Initialize(ExecutionContext context, ILogger logger)
         {
-            if(_loggerProvider == null)
-            {
-                _logger = logger;
-                _loggerProvider = new HostLoggerProvider("me-tenant", _logger);
-            }
-            return _loggerProvider;
+            CreateTestServerHttpClient(context, logger);
         }
 
         public async Task<HttpResponseMessage> SendAsync(ExecutionContext context, 
             HttpRequestMessage httpRequestMessage)
         {
-            if (_logger == null)
+            if (_testServerHttpClient == null)
             {
-                throw new Exception("You must call Initialize(logger) first.");
+                throw new Exception("You must call Initialize(context,logger) first.");
             }
-            var testServerHttpClient = FetchTestServerHttpClient(context, _logger);
+            var testServerHttpClient = _testServerHttpClient;
             httpRequestMessage.Headers.Add("x-InvocationId", context.InvocationId.ToString());
             var responseMessage = await testServerHttpClient.HttpClient.SendAsync(httpRequestMessage);
             return responseMessage;

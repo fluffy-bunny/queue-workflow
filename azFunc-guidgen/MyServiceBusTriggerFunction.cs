@@ -32,20 +32,21 @@ namespace azFunc_guidgen
             [ServiceBusTrigger("sbq-queueflow", Connection = "ServiceBusConnection")]string myQueueItem, 
             ILogger logger)
         {
-            if (!Global.Initialized)
-            {
-                await _functionsAppShim.Initialize(logger);
-                Global.Initialized = true;
-            }
+            await dotnetcore.azFunction.AppShim.Global.InitializeShimAsync(context, _functionsAppShim, logger);
+
             var job = _serializer.Deserialize<Job>(myQueueItem);
             var json = _serializer.Serialize(job);
             logger.LogInformation($"C# ServiceBus queue trigger function processed message: {json}");
 
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/MyServiceBusTriggerFunction");
-            httpRequestMessage.Content = new StringContent(
+            var httpRequestMessage = new HttpRequestMessage(
+                HttpMethod.Post,
+                "http://localhost/api/MyServiceBusTriggerFunction")
+            {
+                Content = new StringContent(
                 json,
-                Encoding.UTF8, "application/json");
+                Encoding.UTF8, "application/json")
+            };
 
  
             var response = await _functionsAppShim.SendAsync(context,httpRequestMessage);

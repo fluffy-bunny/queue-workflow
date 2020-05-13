@@ -1,4 +1,3 @@
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Contracts;
@@ -23,14 +22,12 @@ namespace azFunc_guidgen
         }
        
         [FunctionName("MyQueueTriggerFunction")]
-        public async Task Run([QueueTrigger("queue-main", Connection = "ConnectionStringStorageAccount")]string myQueueItem, 
+        public async Task Run(
+            Microsoft.Azure.WebJobs.ExecutionContext context, 
+            [QueueTrigger("queue-main", Connection = "ConnectionStringStorageAccount")]string myQueueItem, 
             ILogger logger)
         {
-            if (!Global.Initialized)
-            {
-                await _functionsAppShim.Initialize(logger);
-                Global.Initialized = true;
-            }
+            await dotnetcore.azFunction.AppShim.Global.InitializeShimAsync(context, _functionsAppShim, logger);
 
             var job = _serializer.Deserialize<Job>(myQueueItem);
             var json = _serializer.Serialize(job);
