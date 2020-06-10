@@ -61,7 +61,7 @@ namespace ServiceBusCLI
                         var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
                         var queueClient = new QueueClient(queueUri, settings.Queue, tokenProvider);
                         result.QueueClient = queueClient;
-                        return result;
+                        return result as IQueueClientAccessor;
                     });
                     services.AddSingleton<ISerializer, Serializer>();
                     services.AddTransient<SendJob.Request>();
