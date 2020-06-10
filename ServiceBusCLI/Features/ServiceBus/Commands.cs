@@ -25,7 +25,6 @@ namespace ServiceBusCLI.Features.ServiceBus
                 IMediator mediator,
                 IMapper mapper,
                 IConsole console,
-                IFooService fs,
                 ServiceBusSettings.Request request)
             {
                 var command = mapper.Map(this, request);

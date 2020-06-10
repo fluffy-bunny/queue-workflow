@@ -30,7 +30,6 @@ namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
                 IMediator mediator, 
                 IMapper mapper, 
                 IConsole console, 
-                IFooService fs,
                 GenerateSecurityAccessSignature.Request request)
             {
                 var command = mapper.Map(this, request);

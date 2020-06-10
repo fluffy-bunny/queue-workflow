@@ -14,6 +14,8 @@ using ServiceBusCLI.Features.SendJob;
 using ServiceBusCLI.Features.GenerateSecurityAccessSignature;
 using ServiceBusCLI.Features.ServiceBus;
 using ServiceBusCLI.Utils;
+using Microsoft.Azure.ServiceBus.Core;
+using ServiceBusCLI.Features.MessageReceiver;
 
 namespace ServiceBusCLI
 {
@@ -24,6 +26,8 @@ namespace ServiceBusCLI
     [Subcommand(
         typeof(Features.When.Commands.WhenCommand),
         typeof(Features.GenerateSecurityAccessSignature.Commands.GenerateSecurityAccessSignatureCommand),
+        typeof(Features.MessageReceiver.Commands.PeekCommand),
+        typeof(Features.MessageReceiver.Commands.ReceiveCommand),
         typeof(Features.SendJob.Commands.SendJobCommand),
         typeof(Features.ServiceBus.Commands.ServiceBusSettingsCommand)
         )
@@ -46,7 +50,6 @@ namespace ServiceBusCLI
                     services
                         .AddMediatR(typeof(Program).Assembly)
                         .AddAutoMapper(typeof(Program).Assembly);
-                    services.AddSingleton<IFooService, FooService>();
                     services.AddSingleton(sp =>
                     {
                         var result = new QueueClientAccessor();
@@ -63,10 +66,32 @@ namespace ServiceBusCLI
                         result.QueueClient = queueClient;
                         return result as IQueueClientAccessor;
                     });
+                    services.AddSingleton(sp =>
+                    {
+                        var result = new MessageReceiverAccessor();
+                        var appSettings = sp.GetRequiredService(typeof(AppSettings<ServiceBusSettings.Settings>)) as AppSettings<ServiceBusSettings.Settings>;
+                        var settings = appSettings.Load("service-bus-queue-settings.json");
+                        if (settings == null)
+                        {
+                            return result;
+                        }
+
+                        var queueUri = $"sb://{settings.Namespace}.servicebus.windows.net/";
+                        var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
+                        var messageReciever = new MessageReceiver(queueUri, settings.Queue, tokenProvider);
+                        result.MessageReceiver = messageReciever;
+                        return result as IMessageReceiverAccessor;
+                    });
+
+                    
+
                     services.AddSingleton<ISerializer, Serializer>();
                     services.AddTransient<SendJob.Request>();
                     services.AddTransient<GenerateSecurityAccessSignature.Request>();
                     services.AddTransient<ServiceBusSettings.Request>();
+                    services.AddTransient<Peek.Request>();
+                    services.AddTransient<Receive.Request>();
+
                     services.AddTransient(typeof(AppSettings<>), typeof(AppSettings<>));
 
 

@@ -30,11 +30,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBus_Sender", "Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBus_Receiver", "ServiceBus_Receiver\ServiceBus_Receiver.csproj", "{61D43E84-C9A3-4C99-AF2C-EB011C98C32F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUtils", "ConsoleUtils\ConsoleUtils.csproj", "{EA2373F3-CE0F-4769-B951-DE7768206027}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleUtils", "ConsoleUtils\ConsoleUtils.csproj", "{EA2373F3-CE0F-4769-B951-DE7768206027}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetcore.azFunction.AppShim", "dotnetcore.azFunction.AppShim\dotnetcore.azFunction.AppShim.csproj", "{B940F3AB-8218-4790-AEA1-87FB42085409}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiApp", "WebApiApp\WebApiApp.csproj", "{F13CC98B-E4C3-434B-9785-2213AC4CC9CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiApp", "WebApiApp\WebApiApp.csproj", "{F13CC98B-E4C3-434B-9785-2213AC4CC9CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBusCLI", "ServiceBusCLI\ServiceBusCLI.csproj", "{BC35C731-BFDF-4E64-9BE4-66BE4D93F33F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{3AD53AAD-2618-40E1-8777-8069D169C3D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,11 +94,20 @@ Global
 		{F13CC98B-E4C3-434B-9785-2213AC4CC9CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F13CC98B-E4C3-434B-9785-2213AC4CC9CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F13CC98B-E4C3-434B-9785-2213AC4CC9CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC35C731-BFDF-4E64-9BE4-66BE4D93F33F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC35C731-BFDF-4E64-9BE4-66BE4D93F33F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC35C731-BFDF-4E64-9BE4-66BE4D93F33F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC35C731-BFDF-4E64-9BE4-66BE4D93F33F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AD53AAD-2618-40E1-8777-8069D169C3D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AD53AAD-2618-40E1-8777-8069D169C3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AD53AAD-2618-40E1-8777-8069D169C3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AD53AAD-2618-40E1-8777-8069D169C3D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{218763F4-5719-41F7-9A29-4D706E8887A7} = {D59F14CB-8005-4A9C-A5EA-918086240630}
 		{91316A19-31A4-4855-A824-E1A9F7D4393F} = {218763F4-5719-41F7-9A29-4D706E8887A7}
 		{B4645E08-9A9B-4217-B7DC-F692011CF1B3} = {D59F14CB-8005-4A9C-A5EA-918086240630}
 	EndGlobalSection
