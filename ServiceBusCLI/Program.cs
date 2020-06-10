@@ -19,8 +19,21 @@ using ServiceBusCLI.Features.MessageReceiver;
 
 namespace ServiceBusCLI
 {
-    [Command(Name = "SuperTool",
-           Description = "Run helpful utilities for my application")]
+    [Command(Name = "ServiceBusCLI",
+           Description = @"   
+   ____                 _            ___               _____ __    ____
+  / __/___  ____ _  __ (_)____ ___  / _ ) __ __ ___   / ___// /   /  _/
+ _\ \ / -_)/ __/| |/ // // __// -_)/ _  |/ // /(_-<  / /__ / /__ _/ /  
+/___/ \__//_/   |___//_/ \__/ \__//____/ \_,_//___/  \___//____//___/  
+
+This is an Azure Managed Identity Application, so  you must first login to azure;
+
+          az login
+
+
+Set you queue settings;
+
+          ServiceBusCLI service-bus-settings -n <namespace> -q <queue>")]
     [HelpOption]
     [VersionOptionFromMember(MemberName = "GetVersion")]
     [Subcommand(
