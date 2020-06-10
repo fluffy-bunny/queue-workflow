@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
- 
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
 {
+    /*
+     *       "commandLineArgs": "generate-sas -k 8u4ZWemBetr**REDACTED**b/7IEOP3/c= -p RootManageSharedAccessKey -e 3600"
+     */
 
     public static class Commands
     {
@@ -24,9 +26,14 @@ namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
             [Option("-e|--expiry", CommandOptionType.SingleValue, Description = "in seconds")]
             public int ExpirySeconds { get; set; }
 
-            private async Task OnExecuteAsync(IMediator mediator, IMapper mapper, IConsole console, IFooService fs)
+            private async Task OnExecuteAsync(
+                IMediator mediator, 
+                IMapper mapper, 
+                IConsole console, 
+                IFooService fs,
+                GenerateSecurityAccessSignature.Request request)
             {
-                var command = mapper.Map<GenerateSecurityAccessSignature.Request>(this);
+                var command = mapper.Map(this, request);
 
                 var response = await mediator.Send(command);
 

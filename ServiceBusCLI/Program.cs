@@ -10,8 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Primitives;
 using Contracts;
+using ServiceBusCLI.Features.SendJob;
 using ServiceBusCLI.Features.GenerateSecurityAccessSignature;
-using static ServiceBusCLI.Features.GenerateSecurityAccessSignature.Commands;
 
 namespace ServiceBusCLI
 {
@@ -21,7 +21,9 @@ namespace ServiceBusCLI
     [VersionOptionFromMember(MemberName = "GetVersion")]
     [Subcommand(
            typeof(Features.When.Commands.WhenCommand),
-           typeof(Commands.GenerateSecurityAccessSignatureCommand))
+           typeof(Features.GenerateSecurityAccessSignature.Commands.GenerateSecurityAccessSignatureCommand),
+           typeof(Features.SendJob.Commands.SendJobCommand)
+        )
        ]
     internal class Program
     {
@@ -42,7 +44,7 @@ namespace ServiceBusCLI
                         .AddMediatR(typeof(Program).Assembly)
                         .AddAutoMapper(typeof(Program).Assembly);
                     services.AddSingleton<IFooService, FooService>();
-                    services.AddSingleton<QueueClient>(sp =>
+                    services.AddSingleton(sp =>
                     {
                         var queueUri = $"sb://{Namespace}.servicebus.windows.net/";
                         var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
@@ -50,6 +52,9 @@ namespace ServiceBusCLI
                         return queueClient;
                     });
                     services.AddSingleton<ISerializer, Serializer>();
+                    services.AddTransient<SendJob.Request>();
+                    services.AddTransient<GenerateSecurityAccessSignature.Request>();
+                    
                 });
            }
         private int OnExecute(CommandLineApplication app, IConsole console)
