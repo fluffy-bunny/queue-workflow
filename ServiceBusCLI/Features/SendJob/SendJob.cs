@@ -6,6 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
+using ServiceBusCLI.Utils;
 
 namespace ServiceBusCLI.Features.SendJob
 {
@@ -16,9 +17,9 @@ namespace ServiceBusCLI.Features.SendJob
             public QueueClient QueueClient { get; internal set; }
             public string Message { get; internal set; }
  
-            public Request(QueueClient queueClient)
+            public Request(IQueueClientAccessor queueClientAccessor)
             {
-                QueueClient = queueClient;
+                QueueClient = queueClientAccessor.QueueClient;
             }
         }
 

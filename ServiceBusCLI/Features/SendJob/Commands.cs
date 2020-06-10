@@ -3,6 +3,7 @@ using Contracts;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
 using Microsoft.Azure.ServiceBus;
+using ServiceBusCLI.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,10 +20,15 @@ namespace ServiceBusCLI.Features.SendJob
                 IMediator mediator,
                 IMapper mapper, 
                 IConsole console,
-                QueueClient queueClient,
+                IQueueClientAccessor queueClientAccessor,
                 ISerializer serializer,
                 SendJob.Request request)
             {
+                if(queueClientAccessor.QueueClient == null)
+                {
+                    console.WriteLine($"QueueClient is null, did you forget to call service-bus-settings");
+                    return;
+                }
                 var command = mapper.Map(this, request);
                 var job = new Job
                 {
