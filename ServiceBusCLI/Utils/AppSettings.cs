@@ -23,7 +23,12 @@ namespace ServiceBusCLI.Utils
         public T Load(string fileName = DEFAULT_FILENAME)
         {
             if (File.Exists(fileName))
-                return _serializer.Deserialize<T>(File.ReadAllText(fileName));
+            {
+                var json = File.ReadAllText(fileName);
+                var obj = _serializer.Deserialize<T>(json);
+                return obj;
+            }
+                
             return null;
         }
     }

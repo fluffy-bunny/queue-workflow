@@ -43,13 +43,14 @@ Set you queue settings;
         typeof(Features.MessageReceiver.Commands.PeekCommand),
         typeof(Features.MessageReceiver.Commands.ReceiveCommand),
         typeof(Features.SendJob.Commands.SendJobCommand),
-        typeof(Features.ServiceBus.Commands.ServiceBusSettingsCommand)
+        typeof(Features.ServiceBus.Commands.ServiceBusSettingsCommand),
+        typeof(Features.ServiceBus.Commands.ServiceBusRenewLockCommand)
         )
        ]
     internal class Program
     {
-    //    static public string Namespace = "scalesets";
-    //    static public string Queue = "w10rs5pr0";
+        //    static public string Namespace = "scalesets";
+        //    static public string Queue = "w10rs5pr0";
 
         private static async Task Main(string[] args)
         {
@@ -64,40 +65,58 @@ Set you queue settings;
                     services
                         .AddMediatR(typeof(Program).Assembly)
                         .AddAutoMapper(typeof(Program).Assembly);
-                    services.AddSingleton(sp =>
+                    services.AddSingleton<IQueueClientAccessor>(sp =>
                     {
                         var result = new QueueClientAccessor();
-                        var appSettings = sp.GetRequiredService(typeof(AppSettings<ServiceBusSettings.Settings>)) as AppSettings<ServiceBusSettings.Settings>;
-                        var settings = appSettings.Load("service-bus-queue-settings.json");
-                        if(settings == null)
+                        try
                         {
-                            return result;
+                            var settings = sp.GetRequiredService(typeof(ISessionSettings)) as ISessionSettings;
+                            var queueUri = $"sb://{settings.Namespace}.servicebus.windows.net/";
+                            var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
+                            var queueClient = new QueueClient(queueUri, settings.Queue, tokenProvider);
+                            result.QueueClient = queueClient;
                         }
-                       
-                        var queueUri = $"sb://{settings.Namespace}.servicebus.windows.net/";
-                        var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
-                        var queueClient = new QueueClient(queueUri, settings.Queue, tokenProvider);
-                        result.QueueClient = queueClient;
-                        return result as IQueueClientAccessor;
+                        catch (Exception ex)
+                        {
+                            result.QueueClient = null;
+                        }
+                        return result;
+ 
                     });
-                    services.AddSingleton(sp =>
+                    services.AddSingleton<IMessageReceiverAccessor>(sp =>
                     {
                         var result = new MessageReceiverAccessor();
-                        var appSettings = sp.GetRequiredService(typeof(AppSettings<ServiceBusSettings.Settings>)) as AppSettings<ServiceBusSettings.Settings>;
-                        var settings = appSettings.Load("service-bus-queue-settings.json");
-                        if (settings == null)
+                        try
                         {
-                            return result;
+                            var settings = sp.GetRequiredService(typeof(ISessionSettings)) as ISessionSettings;
+                            var queueUri = $"sb://{settings.Namespace}.servicebus.windows.net/";
+                            var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
+                            var messageReciever = new MessageReceiver(queueUri, settings.Queue, tokenProvider);
+                            result.MessageReceiver = messageReciever;
                         }
-
-                        var queueUri = $"sb://{settings.Namespace}.servicebus.windows.net/";
-                        var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
-                        var messageReciever = new MessageReceiver(queueUri, settings.Queue, tokenProvider);
-                        result.MessageReceiver = messageReciever;
-                        return result as IMessageReceiverAccessor;
+                        catch(Exception ex)
+                        {
+                            result.MessageReceiver = null;
+                        }
+                        return result;
                     });
+                    services.AddSingleton<ISecurityAccessSignatureProviderAssessor>(sp =>
+                    {
+                        var result = new SecurityAccessSignatureProviderAssessor();
+                        var svcSecurityAccessSignatureSettings = sp.GetRequiredService(typeof(AppSettings<GenerateSecurityAccessSignature.SecurityAccessSignature>)) as AppSettings<GenerateSecurityAccessSignature.SecurityAccessSignature>;
+                        var settings = svcSecurityAccessSignatureSettings.Load(GenerateSecurityAccessSignature.SettingsFileName);
+                        if (settings != null)
+                        {
+                            result.SecurityAccessSignatureProvider = (ISecurityAccessSignatureProvider)sp.GetRequiredService(typeof(ISecurityAccessSignatureProvider));
+                        }
+                        return result;
+                    });
+                    services.AddSingleton<IServiceBusQueueUtils, ServiceBusQueueUtils>();
+                    services.AddSingleton<ISessionSettings, SessionSettings>();
+                    services.AddSingleton<ISecurityAccessSignatureProvider, SecurityAccessSignatureProvider>();
 
-                    
+
+
 
                     services.AddSingleton<ISerializer, Serializer>();
                     //                    services.AddTransient<SendJob.Request>();
@@ -109,12 +128,15 @@ Set you queue settings;
                     services.AddTransient<ServiceBusSettings.Request>();
                     services.AddTransient<Peek.Request>();
                     services.AddTransient<Receive.Request>();
+                    services.AddTransient<RenewLock.Request>();
+
+                    
 
                     services.AddTransient(typeof(AppSettings<>), typeof(AppSettings<>));
 
 
                 });
-           }
+        }
         private int OnExecute(CommandLineApplication app, IConsole console)
         {
             console.WriteLine("You must specify a command");

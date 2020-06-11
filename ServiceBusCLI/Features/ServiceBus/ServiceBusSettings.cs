@@ -10,6 +10,7 @@ namespace ServiceBusCLI.Features.ServiceBus
 {
     public static class ServiceBusSettings
     {
+        public static string SettingsFileName = "service-bus-queue-settings.json";
         public class Request : IRequest<Response>
         {
             public AppSettings<Settings> AppSettings { get; }
@@ -42,8 +43,8 @@ namespace ServiceBusCLI.Features.ServiceBus
             public Task<Response> Handle(Request request, CancellationToken cancellationToken)
             {
                 var settings = request.Mapper.Map<Settings>(request);
-                request.AppSettings.Save(settings,"service-bus-queue-settings.json");
-                settings = request.AppSettings.Load("service-bus-queue-settings.json");
+                request.AppSettings.Save(settings, ServiceBusSettings.SettingsFileName);
+                settings = request.AppSettings.Load(ServiceBusSettings.SettingsFileName);
                 return RespondWith(request.Serializer.Serialize(settings));
             }
 

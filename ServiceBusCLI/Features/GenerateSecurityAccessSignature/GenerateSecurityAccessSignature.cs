@@ -9,19 +9,23 @@ namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
 {
     public static class GenerateSecurityAccessSignature
     {
-        public static string SettingsFileName = "GenerateSecurityAccessSignature.json";
-        public class Settings
+        public static string SettingsFileName = "SecurityAccessSignature.json";
+        public class SecurityAccessSignature
         {
             public string Token { get; set; }
+            public string Key { get;  set; }
+            public string Policy { get;  set; }
+            public string Namespace { get;  set; }
+            public string Queue { get;  set; }
         }
         public class Request : IRequest<Response>
         {
             public AppSettings<ServiceBus.ServiceBusSettings.Settings> AppSettings { get; }
-            public AppSettings<Settings> SasSettings { get; }
+            public AppSettings<SecurityAccessSignature> SasSettings { get; }
 
             public Request(
                 AppSettings<ServiceBus.ServiceBusSettings.Settings> appsettings,
-                AppSettings<GenerateSecurityAccessSignature.Settings> sasSettings)
+                AppSettings<GenerateSecurityAccessSignature.SecurityAccessSignature> sasSettings)
             {
                 AppSettings = appsettings;
                 SasSettings = sasSettings;
@@ -52,14 +56,22 @@ namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
 
 
                 var sasToken = SeviceBusSecurityAccessSignatureGenerator
-                    .GenerateSecurityAccessSignature(settings.Namespace, settings.Queue, request.Key, request.Policy, 
+                    .GenerateSecurityAccessSignature(
+                    settings.Namespace, 
+                    settings.Queue, 
+                    request.Key, 
+                    request.Policy, 
                     new TimeSpan(0, 0, request.ExpirySeconds));
 
                 if (request.Session)
                 {
-                    var sasSettings = new Settings
+                    var sasSettings = new SecurityAccessSignature
                     {
-                        Token = sasToken
+                        Namespace = settings.Namespace,
+                        Queue = settings.Queue,
+                        Token = sasToken,
+                        Key = request.Key,
+                        Policy = request.Policy
                     };
                     request.SasSettings.Save(sasSettings, SettingsFileName);
                     sasSettings = request.SasSettings.Load(SettingsFileName);
