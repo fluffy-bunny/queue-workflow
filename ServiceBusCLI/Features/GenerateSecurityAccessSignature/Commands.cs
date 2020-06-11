@@ -33,6 +33,9 @@ namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
             [Option("-e|--expiry", CommandOptionType.SingleValue, Description = "in seconds")]
             public int ExpirySeconds { get; set; }
 
+            [Option("-s|--session", CommandOptionType.NoValue, Description = "save SAS in local session storage")]
+            public bool Session { get; } = false;
+
             private async Task OnExecuteAsync(
                 IMediator mediator, 
                 IMapper mapper, 

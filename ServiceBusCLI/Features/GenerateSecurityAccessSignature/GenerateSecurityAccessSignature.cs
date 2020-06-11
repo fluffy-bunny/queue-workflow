@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using ServiceBusCLI.Features.ServiceBus;
 using ServiceBusCLI.Utils;
 using System;
 using System.Threading;
@@ -8,12 +9,22 @@ namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
 {
     public static class GenerateSecurityAccessSignature
     {
+        public static string SettingsFileName = "GenerateSecurityAccessSignature.json";
+        public class Settings
+        {
+            public string Token { get; set; }
+        }
         public class Request : IRequest<Response>
         {
-            public AppSettings<ServiceBusCLI.Features.ServiceBus.ServiceBusSettings.Settings> AppSettings { get; }
-            public Request(AppSettings<ServiceBusCLI.Features.ServiceBus.ServiceBusSettings.Settings> appsettings)
+            public AppSettings<ServiceBus.ServiceBusSettings.Settings> AppSettings { get; }
+            public AppSettings<Settings> SasSettings { get; }
+
+            public Request(
+                AppSettings<ServiceBus.ServiceBusSettings.Settings> appsettings,
+                AppSettings<GenerateSecurityAccessSignature.Settings> sasSettings)
             {
                 AppSettings = appsettings;
+                SasSettings = sasSettings;
 
             }
             public string Key { get; set; }
@@ -21,6 +32,7 @@ namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
             public string Policy { get; set; }
 
             public int ExpirySeconds { get; set; }
+            public bool Session { get; set; }
         }
 
         public class Response
@@ -42,6 +54,18 @@ namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
                 var sasToken = SeviceBusSecurityAccessSignatureGenerator
                     .GenerateSecurityAccessSignature(settings.Namespace, settings.Queue, request.Key, request.Policy, 
                     new TimeSpan(0, 0, request.ExpirySeconds));
+
+                if (request.Session)
+                {
+                    var sasSettings = new Settings
+                    {
+                        Token = sasToken
+                    };
+                    request.SasSettings.Save(sasSettings, SettingsFileName);
+                    sasSettings = request.SasSettings.Load(SettingsFileName);
+                }
+                
+
                 return RespondWith(sasToken);
             }
 
