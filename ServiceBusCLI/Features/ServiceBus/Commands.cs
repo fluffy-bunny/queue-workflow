@@ -32,7 +32,7 @@ namespace ServiceBusCLI.Features.ServiceBus
 
                 var json = response.ToJson(true);
 
-                Console.WriteLine(json);
+                console.WriteLine(json);
 
             }
 

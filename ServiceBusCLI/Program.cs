@@ -54,8 +54,17 @@ Set you queue settings;
 
         private static async Task Main(string[] args)
         {
+            try
+            {
+
             await CreateHostBuilder()
                 .RunCommandLineApplicationAsync<Program>(args);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
         public static IHostBuilder CreateHostBuilder()
         {
