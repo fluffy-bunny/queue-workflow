@@ -88,6 +88,7 @@ Set you queue settings;
                         catch (Exception ex)
                         {
                             result.QueueClient = null;
+                            throw;
                         }
                         return result;
  

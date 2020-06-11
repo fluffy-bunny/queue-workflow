@@ -24,7 +24,7 @@ namespace ServiceBusCLI.Utils
             QueueSettings = appSettings.Load(ServiceBusSettings.SettingsFileName);
             if(QueueSettings == null)
             {
-                throw new FileNotFoundException(ServiceBusSettings.SettingsFileName);
+                throw new FileNotFoundException($"SessionSettings failed to load.  Make sure you call service-bus-settings");
             }
         }
     }
