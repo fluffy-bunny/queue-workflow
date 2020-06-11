@@ -3,6 +3,8 @@ using Contracts;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
 using Microsoft.Azure.ServiceBus;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ServiceBusCLI.Utils;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,12 @@ using System.Threading.Tasks;
 
 namespace ServiceBusCLI.Features.MessageReceiver
 {
+    class JobMessage
+    {
+        public Message Message { get; set; }
+        public Job Job { get; set; }
+    }
+
     public static class Commands
     {
 
@@ -41,16 +49,32 @@ namespace ServiceBusCLI.Features.MessageReceiver
                 }
                 else
                 {
-                    if(response.Result == null)
+
+                    if (response.Result == null)
                     {
                         console.WriteLine($"Success: No Messages Available......");
                     }
                     else
                     {
-                        var json = Encoding.UTF8.GetString(response.Result.Body);
-                        var job = serializer.Deserialize<Job>(json);
-                        json = job.ToJson();
-                        console.WriteLine(json);
+                        try
+                        {
+                            var json = Encoding.UTF8.GetString(response.Result.Body);
+                            var job = serializer.Deserialize<Job>(json);
+                          //  json = job.ToJson();
+
+                            var jobMessage = new JobMessage
+                            {
+                                Job = job,
+                                Message = response.Result
+                            };
+                            json = jobMessage.ToJson(true);
+
+                            Console.WriteLine(json);
+                        }
+                        catch (Exception ex)
+                        {
+                            console.WriteLine($"Success: Got message......but failed to Deserialize\n{ex.Message}");
+                        }
                     }
                 }
             }
@@ -81,10 +105,25 @@ namespace ServiceBusCLI.Features.MessageReceiver
                 }
                 else
                 {
-                    var json = Encoding.UTF8.GetString(response.Result.Body);
-                    var job = serializer.Deserialize<Job>(json);
-                    json = job.ToJson();
-                    console.WriteLine(json);
+                    try
+                    {
+                        var json = Encoding.UTF8.GetString(response.Result.Body);
+                        var job = serializer.Deserialize<Job>(json);
+                      //  json = job.ToJson();
+
+                        var jobMessage = new JobMessage
+                        {
+                            Job = job,
+                            Message = response.Result
+                        };
+                        json = jobMessage.ToJson(true);
+
+                        Console.WriteLine(json);
+                    }
+                    catch (Exception ex)
+                    {
+                        console.WriteLine($"Success: peeked message......but failed to Deserialize\n{ex.Message}");
+                    }
                 }
             }
         }

@@ -3,6 +3,7 @@ using Contracts;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
 using Microsoft.Azure.ServiceBus;
+using ServiceBusCLI.Features.SendMessage;
 using ServiceBusCLI.Utils;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,7 @@ namespace ServiceBusCLI.Features.SendJob
                 IMapper mapper, 
                 IConsole console,
                 IQueueClientAccessor queueClientAccessor,
-                ISerializer serializer,
-                SendJob.Request request)
+                SendMessage<Job>.Request request)
             {
                 if(queueClientAccessor.QueueClient == null)
                 {
@@ -36,12 +36,14 @@ namespace ServiceBusCLI.Features.SendJob
                     IssuedTime = DateTime.UtcNow,
                     Name = "My SuperDuper Job"
                 };
-                var json = serializer.Serialize(job);
-                command.Message = json;
+              //  var json = serializer.Serialize(job);
+                command.Message = job;
 
                 var response = await mediator.Send(command);
+                
+                var json = response.ToJson(true);
 
-                console.WriteLine($"{response.Result}");
+                Console.WriteLine(json);
             }
         }
     }

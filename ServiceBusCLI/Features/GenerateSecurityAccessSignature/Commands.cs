@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Contracts;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +11,10 @@ using System.Threading.Tasks;
 
 namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
 {
+    class SecurityAccessSignatureHandle
+    {
+        public string SecurityAccessSignature { get; set; }
+    }
     /*
      *       "commandLineArgs": "generate-sas -k 8u4ZWemBetr**REDACTED**b/7IEOP3/c= -p RootManageSharedAccessKey -e 3600"
      */
@@ -29,14 +36,21 @@ namespace ServiceBusCLI.Features.GenerateSecurityAccessSignature
             private async Task OnExecuteAsync(
                 IMediator mediator, 
                 IMapper mapper, 
-                IConsole console, 
+                IConsole console,
+                ISerializer serializer,
                 GenerateSecurityAccessSignature.Request request)
             {
                 var command = mapper.Map(this, request);
 
                 var response = await mediator.Send(command);
+                var handle = new SecurityAccessSignatureHandle
+                {
+                    SecurityAccessSignature = response.Result
+                };
+                var json = handle.ToJson(true);
 
-                console.WriteLine($"{response.Result}");
+                Console.WriteLine(json);
+
             }
         }
     }

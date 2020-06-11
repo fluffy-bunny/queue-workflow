@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 
 namespace ServiceBusCLI.Features.ServiceBus
 {
- 
-
     public static class Commands
     {
         [Command("service-bus-settings", Description = "set service-bus queue settings for the cli")]

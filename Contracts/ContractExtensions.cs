@@ -27,9 +27,9 @@ namespace Contracts
             return encoded;
         }
  
-        public static string ToJson<T>(this T obj) where T: class
+        public static string ToJson<T>(this T obj, bool writeIndented = false) where T: class
         {
-            var json = JsonSerializer.Serialize(obj);
+            var json = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = writeIndented });
             return json;
         }
 

@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using Contracts;
+using ServiceBusCLI.Features.SendMessage;
 
 namespace ServiceBusCLI.Features.SendJob
 {
-    public class Mappings : Profile
+    public class Mappings : Profile  
     {
         public Mappings()
         {
-            CreateMap<Commands.SendJobCommand, SendJob.Request>();
+            CreateMap<Commands.SendJobCommand, SendMessage<Job>.Request>();
         }
     }
 }

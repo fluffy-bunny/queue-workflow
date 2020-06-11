@@ -16,6 +16,7 @@ using ServiceBusCLI.Features.ServiceBus;
 using ServiceBusCLI.Utils;
 using Microsoft.Azure.ServiceBus.Core;
 using ServiceBusCLI.Features.MessageReceiver;
+using ServiceBusCLI.Features.SendMessage;
 
 namespace ServiceBusCLI
 {
@@ -26,7 +27,7 @@ namespace ServiceBusCLI
  _\ \ / -_)/ __/| |/ // // __// -_)/ _  |/ // /(_-<  / /__ / /__ _/ /  
 /___/ \__//_/   |___//_/ \__/ \__//____/ \_,_//___/  \___//____//___/  
 
-This is an Azure Managed Identity Application, so  you must first login to azure;
+This is an Azure Managed Identity Application, so you must first login to azure;
 
           az login
 
@@ -99,7 +100,11 @@ Set you queue settings;
                     
 
                     services.AddSingleton<ISerializer, Serializer>();
-                    services.AddTransient<SendJob.Request>();
+                    //                    services.AddTransient<SendJob.Request>();
+                    //                    services.AddTransient(typeof(SendJob.Request<>), typeof(SendJob.Request<>));
+                    services.AddTransient(typeof(SendMessage<>), typeof(SendMessage<>));
+                    services.AddTransient(typeof(SendMessage<>.Request), typeof(SendMessage<>.Request));
+                    services.AddTransient(typeof(SendMessage<>.Response), typeof(SendMessage<>.Response));
                     services.AddTransient<GenerateSecurityAccessSignature.Request>();
                     services.AddTransient<ServiceBusSettings.Request>();
                     services.AddTransient<Peek.Request>();
